@@ -1,10 +1,10 @@
 #include"ChessBoard.h"
-
+#include<string>
 #include<iostream>
 
 using std::cout;
 
-int main() {
+int main() {   
 
 	cout << "========================\n";
 	cout << "Testing the Chess Engine\n";
