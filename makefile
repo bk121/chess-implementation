@@ -31,4 +31,4 @@ helper.o : helper.cpp helper.h
 	g++ -g -Wall -c helper.cpp
 
 clean:
-	rm $(objects)
+	rm $(objects) chess

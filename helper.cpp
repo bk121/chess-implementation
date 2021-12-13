@@ -115,7 +115,6 @@ bool inCheck(int kingRow, int kingColumn, Piece* configuration [8][8], std::stri
 }
 
 bool checkmate(int kingRow, int kingColumn, Piece* configuration [8][8], std::string kingColour, ChessBoard* cb){
-  Piece* tempDelete;
   for (int i=0; i<8; i++){
     for (int j=0; j<8; j++){
       if (configuration[i][j]!=nullptr){
