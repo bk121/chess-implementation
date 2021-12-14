@@ -8,10 +8,10 @@ Castle::Castle(std::string name, std::string colour, ChessBoard* board) : Piece(
 
 bool Castle::validateMove(int start_row, int start_column, int end_row, int end_column){
     if (!sidewaysPath(start_row, start_column, end_row, end_column)){
-        return false; //for example I could jus thave sideways path here
+        return false; 
     }
     if (!oppositeColourTaken(start_row, start_column, end_row, end_column)){
-        return false; // ok but
+        return false; 
     }
     return true;
 }
