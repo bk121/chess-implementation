@@ -59,10 +59,10 @@ void ChessBoard::resetBoard(){
   configuration [7][7]=new Castle("Castle", "Black", this);
   
   current_colour="White";
-  whiteKingPosition[0]=0;
-  whiteKingPosition[1]=4;
-  blackKingPosition[0]=7; 
-  blackKingPosition[1]=4;
+  white_king_position[0]=0;
+  white_king_position[1]=4;
+  black_king_position[0]=7; 
+  black_king_position[1]=4;
 
   std::cout << "A new chess game is started!\n";
 }
@@ -77,17 +77,17 @@ void ChessBoard::submitMove(std::string start, std::string end){
   }
 
   switch (checkInput(start, end)){
-    case 1:
+    case INCORRECT_INPUT_FORMAT:
       std::cout << "Input invalid - 'start position' and 'end position' must contain an uppercase letter\n"
                   "between A and H followed by an integer between 1 and 8. For castling, 'start position'\n" 
                   "is the king's position and 'end position' is '0-0' for kingside or '0-0-0' for queenside.\n";
       exit(1);
   
-    case 2:
+    case START_EQUALS_END:
       std::cout << "'start position' and 'end position' cannot be the same.\n";
       exit(1);
 
-    case 3:
+    case CASTLING:
       if (castlingMove(start, end)==false){
         std::cout << "Castling only allowed if the king and the castle have never moved, the squares between the\n"
                      "king and the castle are unoccupied, the king is not in check, and the king does not cross\n" 
@@ -201,18 +201,18 @@ Piece* (*ChessBoard::getConfiguration())[8]{
 
 int* ChessBoard::getKingPosition(std::string kingColour){
   if (kingColour=="White"){
-    return whiteKingPosition;
+    return white_king_position;
   }
-  return blackKingPosition;
+  return black_king_position;
 }
 void ChessBoard::setKingPosition(std::string kingColour, int newRow, int newColumn){
   if (kingColour=="White"){
-    whiteKingPosition[0]=newRow;
-    whiteKingPosition[1]=newColumn;
+    white_king_position[0]=newRow;
+    white_king_position[1]=newColumn;
   }
   else {
-    blackKingPosition[0]=newRow;
-    blackKingPosition[1]=newColumn;
+    black_king_position[0]=newRow;
+    black_king_position[1]=newColumn;
   }
 }
 
