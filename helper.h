@@ -4,6 +4,9 @@
 #include "Piece.h"
 #include "ChessBoard.h"
 
+#define ASCII_A 65
+#define ASCII_1 49
+
 //Takes a chess-language position reference and sets the parameters row and column into the
 //array indices this represents
 void makeIndices(std::string str, int& row, int& column);           

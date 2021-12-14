@@ -5,13 +5,13 @@
 #include <iostream>
 
 void makeIndices(std::string str, int& row, int& column){
-  column=str[0]-65;
-  row=str[1]-49;
+  column=str[0]-ASCII_A;
+  row=str[1]-ASCII_1;
 }           
       
 bool oneToEight(char ch){
   for (int i=0; i<8; i++){
-    if (ch==i+49){
+    if (ch==i+ASCII_1){
       return true;
     }
   }
@@ -21,7 +21,7 @@ bool oneToEight(char ch){
 
 bool aToH(char ch){
   for (int i=0; i<8; i++){
-    if (ch==i+65){
+    if (ch==i+ASCII_A){
       return true;
     }
   }

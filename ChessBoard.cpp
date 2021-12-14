@@ -167,9 +167,8 @@ void ChessBoard::submitMove(std::string start, std::string end){
   else {
     current_colour="White";
   }
-  //scan for possible check/checkmate/stalemate 
   
-  
+  //scan for possible check/checkmate/stalemate  
   if (inCheck()){
     if (checkmate()){
       std::cout << current_colour << " is in checkmate\n";
@@ -229,7 +228,6 @@ Piece* ChessBoard::move(int start_row, int start_column, int end_row, int end_co
 
 
 
-// takes in colour of king and his square to see if he is in check
 bool ChessBoard::inCheck(){
   int kingRow=*(getKingPosition(current_colour));
   int kingColumn=*(getKingPosition(current_colour)+1);
@@ -249,9 +247,7 @@ bool ChessBoard::inCheck(){
 
 bool ChessBoard::checkmate(){
   int kingRow=*(getKingPosition(current_colour));
-  //std::cout << kingRow << "\n";
   int kingColumn=*(getKingPosition(current_colour)+1);
-  //std:: cout << kingColumn;
   for (int i=0; i<8; i++){
     for (int j=0; j<8; j++){
       if (configuration[i][j]!=nullptr){
