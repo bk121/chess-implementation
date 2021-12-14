@@ -279,19 +279,19 @@ bool ChessBoard::checkmate(){
 
 int ChessBoard::checkInput(std::string start, std::string end){
   if ((start=="E1" || start=="E8") && (end=="0-0" || end=="0-0-0")){
-    return 3;
+    return CASTLING;
   }
   
   if (start.length()!=2 || end.length()!=2){
-    return 1;
+    return INCORRECT_INPUT_FORMAT;
   }
  
   if (!(aToH(start[0]) && oneToEight(start[1]) && aToH(end[0]) && oneToEight(end[1]))){
-    return 1;
+    return INCORRECT_INPUT_FORMAT;
   }
  
   if (start==end){
-    return 2;
+    return START_EQUALS_END;
   }
 
   return 0;
