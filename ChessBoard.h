@@ -10,17 +10,25 @@
 #include "Knight.h"
 #include "Castle.h"
 
-//so now can i use the chessboard* in my piece.cpp yep
-
 class ChessBoard {
   std::string current_colour = {"White"};
   Piece* configuration[8][8];
   int whiteKingPosition[2]; //macros?
   int blackKingPosition[2];
   bool inCheck();
+  bool squareInCheck(int row, int column);
   bool checkmate();
   Piece* move(int start_row, int start_column, int end_row, int end_column);
-  int checkInput(std::string start, std::string end);  
+  int checkInput(std::string start, std::string end);
+  bool castlingMove(std::string start, std::string end); 
+  bool kingside_white=true;
+  bool queenside_white=true;
+  bool kingside_black=true;
+  bool queenside_black=true;
+  void noQueenside();
+  void noKingside();
+  void setCastleSquare(std::string str, int& castle_row, int& castle_column);
+  bool game_over=false;
   
  public:
   ChessBoard();

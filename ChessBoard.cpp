@@ -69,17 +69,32 @@ void ChessBoard::resetBoard(){
 
 
 void ChessBoard::submitMove(std::string start, std::string end){
-  if (checkInput(start, end)==1){
-    std::cout << "Input invalid - 'start position' and 'end position' must contain an uppercase letter\n"
-                 "between A and H followed by an integer between 1 and 8. For castling, 'start position'\n" 
-                 "is the king's position and 'end position' is '0-0' for kingside or '0-0-0' for queenside.\n";
-    exit(1);
+
+  
+  if(game_over==true){
+    std::cout << "Please reset board.\n";
+    return;
   }
-  if (checkInput(start, end)==2){
-    std::cout << "'start position' and 'end position' cannot be the same.\n";
-    exit(1);
+
+  switch (checkInput(start, end)){
+    case 1:
+      std::cout << "Input invalid - 'start position' and 'end position' must contain an uppercase letter\n"
+                  "between A and H followed by an integer between 1 and 8. For castling, 'start position'\n" 
+                  "is the king's position and 'end position' is '0-0' for kingside or '0-0-0' for queenside.\n";
+      exit(1);
+  
+    case 2:
+      std::cout << "'start position' and 'end position' cannot be the same.\n";
+      exit(1);
+
+    case 3:
+      if (castlingMove(start, end)==false){
+        std::cout << "Castling only allowed if the king and the castle have never moved, the squares between the\n"
+                     "king and the castle are unoccupied, the king is not in check, and the king does not cross\n" 
+                     "over or end on a square attacked by an enemy piece.\n";
+      }
+      return;
   }
-  //if (checkInput(start, end)==3){ do castling 
     
 
   int start_row;
@@ -133,6 +148,18 @@ void ChessBoard::submitMove(std::string start, std::string end){
     delete takenPiece;
   }
 
+  //check if castling information needs updating
+  if (start=="E1"||start=="E8"){
+    noKingside();
+    noQueenside();
+  }
+  if (start=="A1"||start=="A8"){
+    noQueenside();
+  }
+  if (start=="H1"||start=="H8"){
+    noKingside();
+  }
+ 
   //switch colours
   if (current_colour=="White"){
     current_colour="Black";
@@ -146,6 +173,7 @@ void ChessBoard::submitMove(std::string start, std::string end){
   if (inCheck()){
     if (checkmate()){
       std::cout << current_colour << " is in checkmate\n";
+      game_over=true;
       return;
     }
     std::cout << current_colour << " is in check\n";
@@ -155,8 +183,10 @@ void ChessBoard::submitMove(std::string start, std::string end){
 
   if (checkmate()){
     std::cout << current_colour << " cannot make a legal move. Game ends in stalemate.\n";
+    game_over=true;
     return;
   }
+
   return;
 }
 
@@ -265,4 +295,142 @@ int ChessBoard::checkInput(std::string start, std::string end){
   }
 
   return 0;
+}
+
+
+bool ChessBoard::castlingMove(std::string start, std::string end){
+  int king_row;
+  int king_column;
+  makeIndices(start, king_row, king_column);
+  int castle_row;
+  int castle_column;
+  setCastleSquare(end, castle_row, castle_column);
+  //Kingside white
+  if (start=="E1" && end=="0-0"){
+    if (kingside_white && configuration[0][5]==nullptr && configuration[0][6]==nullptr && !inCheck()
+            && !squareInCheck(0, 5) &&!squareInCheck(0, 6)){
+        move(king_row, king_column, 0, 6);
+        move(castle_row, castle_column, 0, 5);
+        std::cout << "White castles kingside\n";
+    }
+    else
+    return false;
+  }
+  //Queenside white
+  if (start=="E1" && end=="0-0-0"){
+    if (queenside_white && configuration[0][1]==nullptr && configuration[0][2]==nullptr && configuration[0][3]==nullptr && !inCheck()
+            && !squareInCheck(0, 1) && !squareInCheck(0, 2) && !squareInCheck(0, 3)){
+        move(king_row, king_column, 0, 2);
+        move(castle_row, castle_column, 0, 3);
+        std::cout << "White castles queenside\n";
+    }
+    else 
+    return false;
+  }
+  //Kingside black
+  if (start=="E8" && end=="0-0"){
+    if (kingside_black && configuration[7][5]==nullptr && configuration[7][6]==nullptr && !inCheck()
+            && !squareInCheck(7, 5) && !squareInCheck(7, 6)){
+        move(king_row, king_column, 7, 6);
+        move(castle_row, castle_column, 7, 5);
+        std::cout << "Black castles kingside\n";
+    }
+    else
+    return false;
+  }
+  //Queenside black
+  if (start=="E8" && end=="0-0-0"){
+    if (queenside_black && configuration[7][1]==nullptr && configuration[7][2]==nullptr && configuration[7][3]==nullptr && !inCheck()
+            && !squareInCheck(7, 1) && !squareInCheck(7, 2) && !squareInCheck(7, 3)){
+        move(king_row, king_column, 7, 2);
+        move(7, 0, 7, 3);
+        std::cout << "Black castles queenside\n";
+    }
+    else
+    return false;
+  }
+  
+  //switch colours
+  if (current_colour=="White"){
+    current_colour="Black";
+  }
+  else {
+    current_colour="White";
+  }
+
+  //check for check/checkmate/stalemate
+  if (inCheck()){
+    if (checkmate()){
+      std::cout << current_colour << " is in checkmate\n";
+      game_over=true;
+      return true;
+    }
+    std::cout << current_colour << " is in check\n";
+    return true;
+  }
+
+  if (checkmate()){
+    std::cout << current_colour << " cannot make a legal move. Game ends in stalemate.\n";
+    game_over=true;
+    return true;
+  }
+  
+  return true;
+}
+
+void ChessBoard::noQueenside(){
+  if (current_colour=="White" && queenside_white==true){
+    queenside_white=false;
+  }
+  if (current_colour=="Black" && queenside_black==true){
+    queenside_black=false;
+  }
+}
+void ChessBoard::noKingside(){
+  if (current_colour=="White" && kingside_white==true){
+    kingside_white=false;
+  }
+  if (current_colour=="Black" && kingside_black==true){
+    kingside_black=false;
+  }
+}
+
+
+void ChessBoard::setCastleSquare(std::string str, int& castle_row, int& castle_column){
+  if (str=="0-0" && current_colour=="White"){
+    castle_row=0;
+    castle_column=7;
+    return;
+  }
+  if (str=="0-0" && current_colour=="Black"){
+    castle_row=7;
+    castle_column=7;
+    return;
+  }
+  if (str=="0-0-0" && current_colour=="White"){
+    castle_row=0;
+    castle_column=0;
+    return;
+  }
+  if (str=="0-0-0" && current_colour=="Black"){
+    castle_row=7;
+    castle_column=0;
+    return;
+  }
+  return;
+}
+
+bool ChessBoard::squareInCheck(int row, int column){
+  for (int i=0; i<8; i++){
+    for (int j=0; j<8; j++){
+      if (configuration[i][j]!=nullptr){
+        if (current_colour!=configuration[i][j]->getColour()){
+          if (configuration[i][j]->validateMove(i, j, row, column)){
+            return true;
+          }
+        }
+      }
+    }
+  }
+  return false;
 }

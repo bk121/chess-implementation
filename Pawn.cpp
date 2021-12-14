@@ -5,8 +5,6 @@
 
 Pawn::Pawn(std::string name, std::string colour, ChessBoard* board) : Piece(name, colour, board){}
 bool Pawn::validateMove(int start_row, int start_column, int end_row, int end_column){
-  
-  
 
   if (getColour() == "White"){
     if (start_column==end_column && start_row+1==end_row && board->getConfiguration()[end_row][end_column]==nullptr){
